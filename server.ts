@@ -12,6 +12,7 @@ function setSecrets() {
   const { secrets } = context;
   secrets.databaseHost = process.env.MONGODB_HOST;
   secrets.databaseName = process.env.MONGODB_DATABASE_NAME;
+  console.log(JSON.stringify({ secrets, env: process.env }))
 }
 
 async function startDatabase(secrets: NullstackSecrets) {
@@ -27,8 +28,6 @@ async function startDatabase(secrets: NullstackSecrets) {
 
 context.start = async function start() {
   setSecrets();
-
-  await startDatabase(context.secrets);
 }
 
 export default context;
