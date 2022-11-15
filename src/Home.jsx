@@ -1,26 +1,15 @@
-import Nullstack, { NullstackClientContext, NullstackNode } from 'nullstack';
+import Nullstack from 'nullstack';
 import Logo from 'nullstack/logo';
 import Counter from './Counter';
 
-interface HomeProps {
-  greeting: string
-}
+class Home extends Nullstack {
 
-interface HomeLinkProps {
-  href: string
-}
-
-declare function Link(context: HomeLinkProps): NullstackNode
-declare function ActionLink(context: HomeLinkProps): NullstackNode
-
-class Home extends Nullstack<HomeProps> {
-
-  prepare({ project, page, greeting }: NullstackClientContext<HomeProps>) {
+  prepare({ project, page, greeting }) {
     page.title = `${project.name} - ${greeting}`;
     page.description = `${project.name} was made with Nullstack`;
   }
 
-  renderLink({ children, href }: NullstackClientContext<HomeProps & HomeLinkProps>) {
+  renderLink({ children, href }) {
     const link = href + '?ref=create-nullstack-app';
     return (
       <a class="text-pink-500 ml-1" href={link} target="_blank" rel="noopener noreferrer">
@@ -29,7 +18,7 @@ class Home extends Nullstack<HomeProps> {
     )
   }
 
-  renderActionLink({ children, href }: NullstackClientContext<HomeProps & HomeLinkProps>) {
+  renderActionLink({ children, href }) {
     const link = href + '?ref=create-nullstack-app';
     return (
       <a class="inline-block text-pink-500 mb-1" href={link} target="_blank" rel="noopener noreferrer">
@@ -38,7 +27,7 @@ class Home extends Nullstack<HomeProps> {
     )
   }
 
-  render({ project, greeting }: NullstackClientContext<HomeProps>) {
+  render({ project, greeting }) {
     return (
       <section class="w-full max-w-3xl min-h-screen my-0 mx-auto flex items-center p-6 flex-wrap md:flex-nowrap">
         <article class="w-full mb-5">
@@ -82,7 +71,7 @@ class Home extends Nullstack<HomeProps> {
               </ActionLink>
             </li>
           </ul>
-          <span class="block mt-2">
+           <span class="block mt-2">
             Hint: we have a
             <Link href="vscode:extension/ChristianMortaro.vscode-nullstack">
               VS Code Extension

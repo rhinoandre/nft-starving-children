@@ -1,27 +1,9 @@
-import Nullstack, { NullstackClientContext, NullstackNode } from 'nullstack';
+import Nullstack from 'nullstack';
 import '../tailwind.css';
 import Home from './Home';
 
-declare function Head(): NullstackNode
-
-interface NFTChildren {
-  name: string;
-  nftCode: string;
-  description: string;
-  externalLink: string;
-  dehydrated: boolean;
-  crying: boolean;
-  price: number;
-  nftForDonation: {
-    name: string;
-    nftCode: string;
-    description: string;
-    externalLink: string;
-  }
-}
-
 class Application extends Nullstack {
-  nftChildren: NFTChildren[];
+  nftChildren;
 
   static async getNFTChildren({ database }) {
     return await database?.collection('children_nft').find().toArray();
@@ -31,7 +13,7 @@ class Application extends Nullstack {
     this.nftChildren = await Application.getNFTChildren(context);
   }
 
-  prepare({ page }: NullstackClientContext) {
+  prepare({ page }) {
     page.locale = 'en-US';
   }
 

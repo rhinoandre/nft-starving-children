@@ -1,20 +1,11 @@
-import Nullstack, { NullstackServerContext } from 'nullstack';
+import Nullstack from 'nullstack';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
-
-interface Counter {
-  setCount(SetCountProps): void
-  getCount(): Promise<number>
-}
-
-interface SetCountProps {
-  count: number
-}
 
 class Counter extends Nullstack {
 
   count = 0
 
-  static async getCount({ environment }: NullstackServerContext): Promise<number> {
+  static async getCount({ environment }) {
     const databaseFile = `${environment.production ? '.production' : '.development'}/count.json`
     if (existsSync(databaseFile)) {
       const json = readFileSync(databaseFile, 'utf-8');
@@ -28,10 +19,10 @@ class Counter extends Nullstack {
     this.count = await this.getCount();
   }
 
-  static async setCount({ environment, count }: NullstackServerContext<SetCountProps>) {
+  static async setCount({ environment, count }) {
     const databaseFile = `${environment.production ? '.production' : '.development'}/count.json`
     const json = JSON.stringify({ count });
-    return writeFileSync(databaseFile as string, json);
+    return writeFileSync(databaseFile, json);
   }
 
   async increment() {
