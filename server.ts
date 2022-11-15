@@ -8,26 +8,19 @@ interface CustomNullstackServerContext extends NullstackServerContext {
 
 const context = Nullstack.start(Application) as CustomNullstackServerContext;
 
-function setSecrets() {
-  const { secrets } = context;
-  secrets.databaseHost = process.env.MONGODB_HOST;
-  secrets.databaseName = process.env.MONGODB_DATABASE_NAME;
-  console.log(JSON.stringify({ secrets, env: process.env }))
-}
-
 async function startDatabase(secrets: NullstackSecrets) {
   try {
-    const databaseClient = new MongoClient(secrets.databaseHost as string);
+    const databaseClient = new MongoClient(process.env.MONGODB_HOST);
     await databaseClient.connect();
-    context.database = await databaseClient.db(secrets.databaseName as string);
+    context.database = await databaseClient.db(process.env.MONGODB_DATABASE_NAME);
   } catch (error) {
     console.log(error)
-    console.log(secrets)
+    console.log(process.env)
   }
 }
 
 context.start = async function start() {
-  setSecrets();
+  await startDatabase(context.secrets);
 }
 
 export default context;
