@@ -15,6 +15,9 @@ NULLSTACK_PROJECT_NAME="[dev] Nft Starving Children"
 NULLSTACK_PROJECT_DOMAIN="localhost"
 NULLSTACK_PROJECT_COLOR="#D22365"
 NULLSTACK_SERVER_PORT="3000"
+
+MONGODB_HOST="ASK FOR IT"
+MONGODB_DATABASE_NAME="nft_starving_children"
 ```
 
 Run the app in development mode:
