@@ -4,21 +4,21 @@ import Home from './Home';
 
 declare function Head(): NullstackNode
 
-  interface NFTChildren {
+interface NFTChildren {
+  name: string;
+  nftCode: string;
+  description: string;
+  externalLink: string;
+  dehydrated: boolean;
+  crying: boolean;
+  price: number;
+  nftForDonation: {
     name: string;
     nftCode: string;
     description: string;
     externalLink: string;
-    dehydrated: boolean;
-    crying: boolean;
-    price: number;
-    nftForDonation: {
-      name: string;
-      nftCode: string;
-      description: string;
-      externalLink: string;
-    }
   }
+}
 
 class Application extends Nullstack {
   nftChildren: NFTChildren[];

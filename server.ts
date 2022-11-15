@@ -11,9 +11,9 @@ const context = Nullstack.start(Application) as CustomNullstackServerContext;
 async function startDatabase() {
   const { secrets } = context;
 
-  const databaseClient = new MongoClient(secrets.databaseHost as string);
+  const databaseClient = new MongoClient(`${secrets.databaseHost}`);
   await databaseClient.connect();
-  context.database = await databaseClient.db(secrets.databaseName as string);
+  context.database = await databaseClient.db(`${secrets.databaseName}`);
 }
 
 context.start = async function start() {
