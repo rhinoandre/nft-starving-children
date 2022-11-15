@@ -15,9 +15,14 @@ function setSecrets() {
 }
 
 async function startDatabase(secrets: NullstackSecrets) {
-  const databaseClient = new MongoClient(secrets.databaseHost as string);
-  await databaseClient.connect();
-  context.database = await databaseClient.db(secrets.databaseName as string);
+  try {
+    const databaseClient = new MongoClient(secrets.databaseHost as string);
+    await databaseClient.connect();
+    context.database = await databaseClient.db(secrets.databaseName as string);
+  } catch (error) {
+    console.log(error)
+    console.log(secrets)
+  }
 }
 
 context.start = async function start() {
