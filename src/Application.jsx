@@ -1,6 +1,8 @@
 import Nullstack from 'nullstack';
 import '../tailwind.css';
 import Home from './Home';
+import Box3D from './Box3D';
+import Price from './Price';
 
 class Application extends Nullstack {
   nftChildren;
@@ -33,18 +35,19 @@ class Application extends Nullstack {
     return (
       <body class="bg-gray-900 text-white font-roboto">
         <Head />
-        {this.nftChildren?.map(child => (<>
-          <div>
-            <h1>{child.name}</h1>
-            <p>{child.nftCode}</p>
-            <p>{child.description}</p>
-          </div>
-          <div>
-            <h1>{child.nftForDonation.name}</h1>
-            <p>{child.nftForDonation.nftCode}</p>
-            <p>{child.nftForDonation.description}</p>
-          </div>
-        </>))}
+        <div class="flex gap-3">
+          <Box3D>
+            <img src='/child1.png' />
+          </Box3D>
+          <Box3D>
+            <img src='/child2.png' />
+            <div>
+              <h3>NFT Name</h3>
+              <h4>Creator's name</h4>
+            </div>
+            <Price value="0.49" />
+          </Box3D>
+        </div>
         <Home route="/" greeting="Welcome to Nullstack!" />
       </body>
     )
