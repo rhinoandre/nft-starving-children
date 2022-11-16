@@ -9,8 +9,8 @@ class Application extends Nullstack {
     return await database?.collection('children_nft').find().toArray();
   }
 
-  async initiate(context) {
-    this.nftChildren = await Application.getNFTChildren(context);
+  async initiate() {
+    this.nftChildren = await this.getNFTChildren();
   }
 
   prepare({ page }) {
