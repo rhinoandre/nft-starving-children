@@ -1,4 +1,5 @@
 import Nullstack from 'nullstack';
+import Icon from './Icon';
 
 class Price extends Nullstack {
   render({ value }) {
@@ -6,7 +7,7 @@ class Price extends Nullstack {
     <>
       <p>Price</p>
       <div class="flex gap-2">
-        <img src='/tap.svg' /> {value}
+        <Icon type="tap" /> {value}
       </div>
     </>)
   }

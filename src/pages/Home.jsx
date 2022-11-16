@@ -1,6 +1,6 @@
 import Nullstack from 'nullstack';
 import Logo from 'nullstack/logo';
-import Counter from './Counter';
+import Counter from '../Counter';
 
 class Home extends Nullstack {
 

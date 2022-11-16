@@ -1,8 +1,8 @@
 import Nullstack from 'nullstack';
 import '../tailwind.css';
-import Home from './Home';
-import Box3D from './Box3D';
-import Price from './Price';
+import Home from './pages/Home';
+import Box3D from './components/Box3D';
+import Price from './components/Price';
 
 class Application extends Nullstack {
   nftChildren;
