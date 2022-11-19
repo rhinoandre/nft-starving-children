@@ -1,8 +1,7 @@
 import Nullstack from 'nullstack';
 import '../tailwind.css';
+import Header from './components/Header';
 import Home from './pages/Home';
-import Box3D from './components/Box3D';
-import Price from './components/Price';
 
 class Application extends Nullstack {
   nftChildren;
@@ -33,21 +32,9 @@ class Application extends Nullstack {
 
   render() {
     return (
-      <body class="bg-gray-900 text-white font-roboto">
+      <body class="bg-gray-900 text-white font-pragmatica">
         <Head />
-        <div class="flex gap-3">
-          <Box3D>
-            <img src='/child1.png' />
-          </Box3D>
-          <Box3D>
-            <img src='/child2.png' />
-            <div>
-              <h3>NFT Name</h3>
-              <h4>Creator's name</h4>
-            </div>
-            <Price value="0.49" />
-          </Box3D>
-        </div>
+        <Header />
         <Home route="/" greeting="Welcome to Nullstack!" />
       </body>
     )

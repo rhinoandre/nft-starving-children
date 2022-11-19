@@ -10,6 +10,7 @@ module.exports = {
     fontFamily: {
       'roboto': ['Roboto', 'sans-serif'],
       'crete-round': ['Crete Round', 'sans-serif'],
+      'pragmatica': 'pragmatica-extended'
     }
   },
   plugins: [],

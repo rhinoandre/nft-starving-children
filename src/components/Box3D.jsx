@@ -1,18 +1,20 @@
-import Nullstack from 'nullstack';
+const SIZES = {
+  s: 'w-36',
+  m: 'w-48',
+  l: 'w-80',
+}
 
-class Box3D extends Nullstack {
-  render({ children, width='48', distance='5' }) {
-    return (
-      <div class={[
-        `w-${width} relative border-solid border-2 mb-7 ml-7`,
-        `before:absolute before:border-solid before:box-content before:border-2 before:border-l-0 before:top-[-2px] before:w-7 before:h-full before:right-0 before:translate-x-[100%] before:translate-y-[14px] before:skew-y-[45deg]`,
-        `after:absolute after:border-solid after:box-content after:border-2 after:border-t-0 after:border-r-0 after:left-[-2px] after:h-7 after:w-full after:bottom-0 after:translate-y-[103%] after:translate-x-[14.3px] after:skew-x-[46deg]`
-      ]}>
-        {children}
-      </div>
-    )
-  }
-
+function Box3D({ children, width = '44' }) {
+  return (
+    <div class={[
+      SIZES[width],
+      `relative border-solid border-2 mb-7 ml-7 h-full`,
+    ]}>
+      <div class="absolute border-solid box-content border-2 border-l-0 w-5 h-full right-[-2px] translate-x-[100%] translate-y-[9px] skew-y-[45deg]"></div>
+      {children}
+      <div class="absolute border-solid box-content border-2 border-t-0 border-r-0 left-[-2px] h-5 w-full bottom-0 translate-y-[109%] translate-x-[11.8px] skew-x-[48deg]"></div>
+    </div>
+  )
 }
 
 export default Box3D;
