@@ -1,3 +1,5 @@
+const {expect} = require('chai');
+
 /* test/sample-test.js */
 describe("StarvingChildren", function() {
   it("Should create and execute market sales", async function() {
@@ -8,12 +10,10 @@ describe("StarvingChildren", function() {
 
     const auctionPrice = ethers.utils.parseUnits('1', 'ether')
 
-    /* create two tokens */
-    const transaction = await nftStarvingChildren.createNFTs("https://www.mytokenlocation.com", "https://www.mytokenlocation.com", auctionPrice)
+    const transaction = await nftStarvingChildren.createNFT("https://www.mytokenlocation.com", auctionPrice)
     const rc = await transaction.wait();
     const event = rc.events.find(event => event.event === 'Transfer');
-    const [childTokenId, donationTokenId, price] = event.args;
-    console.log(ethers.utils.parseUnits(childTokenId, 'decimals'), donationTokenId, price);
+    const [tokenId, price] = event.args;
     // await nftStarvingChildren.createToken("https://www.mytokenlocation2.com", auctionPrice)
 
     // const [_, buyerAddress] = await ethers.getSigners()
@@ -22,5 +22,7 @@ describe("StarvingChildren", function() {
     // await nftStarvingChildren.connect(buyerAddress).createMarketSale(1, { value: auctionPrice })
 
     // console.log('childNFT: ', childNFT)
+    expect(tokenId).not.to.be(null);
+    expect(price).to.be(auctionPrice);
   })
 })
