@@ -10,43 +10,58 @@ import 'hardhat/console.sol';
 
 contract StarvingChildren is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
+    Counters.Counter private _templateIds;
     Counters.Counter private _tokenIds;
 
-    mapping(uint256 => ChildNFT) private childNFTs;
+    mapping(uint256 => Token) private nftTemplates;
 
-    struct ChildNFT {
-        uint256 tokenId;
-        address payable owner;
+    struct Token {
+        uint templateId;
+        string childURI;
+        string donationURI;
+        uint price;
     }
 
-    event ItemCreated(uint256 indexed tokenId);
+    event TemplateCreated(uint indexed tokenId, string childURI, string donationURI, uint price);
+    event TokenSold(uint indexed templateId, uint childId, uint donationId, uint price);
 
     constructor() ERC721('StarvingChildren', 'SC') {}
 
-    function createNFT(
-        string memory tokenURI,
-        uint256 price
-    ) public onlyOwner returns (uint256) {
+    function createTemplate(
+        string memory childURI,
+        string memory donationURI,
+        uint price
+    ) public onlyOwner {
         require(price > 0, 'Price must be at least 1 wei');
-        uint256 tokenId = _createToken(tokenURI);
+        _templateIds.increment();
+        uint templateId = _templateIds.current();
 
-        childNFTs[tokenId] = ChildNFT(tokenId, payable(owner()));
-        emit ItemCreated(tokenId);
+        nftTemplates[templateId] = Token(templateId, childURI, donationURI, price);
+        emit TemplateCreated(templateId, childURI, donationURI, price);
+    }
+
+    function _createToken(address owner, string memory tokenURI) private returns (uint256) {
+        _tokenIds.increment();
+        uint tokenId = _tokenIds.current();
+
+        _mint(owner, tokenId);
+        _setTokenURI(tokenId, tokenURI);
 
         return tokenId;
     }
 
-    function _createToken(string memory tokenURI) private returns (uint256) {
-        _tokenIds.increment();
-        uint256 newTokenId = _tokenIds.current();
+    function mintNFT(uint templateId) public onlyOwner payable {
+        Token memory token = getTemplate(templateId);
 
-        _mint(owner(), newTokenId);
-        _setTokenURI(newTokenId, tokenURI);
+        // mint token to their owner
+        uint childId = _createToken(msg.sender, token.childURI);
+        uint donationId = _createToken(owner(), token.donationURI);
 
-        return newTokenId;
+        payable(owner()).transfer(token.price);
+        emit TokenSold(templateId, childId, donationId, token.price);
     }
 
-    function getToken(uint id) public view returns (ChildNFT memory){
-      return childNFTs[id];
+    function getTemplate(uint id) public view returns (Token memory){
+      return nftTemplates[id];
     }
 }
