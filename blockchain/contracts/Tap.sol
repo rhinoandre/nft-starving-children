@@ -4,7 +4,7 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract ThoughtsAndPrayers is ERC20, Ownable {
+contract TAP is ERC20, Ownable {
   uint256 constant public waitTime = 5 minutes;
   uint256 private unit;
 
@@ -12,7 +12,7 @@ contract ThoughtsAndPrayers is ERC20, Ownable {
 
   constructor() ERC20("Thoughts and Prayers", "TAP") {
     unit = 10 ** decimals();
-    _mint(msg.sender, 50 * unit);
+    _mint(msg.sender, 200 * unit);
   }
 
   modifier allowedToReceive(address _address) {
@@ -21,7 +21,7 @@ contract ThoughtsAndPrayers is ERC20, Ownable {
   }
 
   function mint(uint amount) public {
-    payable(owner()).tranfer(amount);
+    payable(owner()).transfer(amount);
     _mint(msg.sender, amount * unit);
   }
 
