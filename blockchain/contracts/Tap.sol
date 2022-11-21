@@ -20,7 +20,8 @@ contract ThoughtsAndPrayers is ERC20, Ownable {
     _;
   }
 
-  function mint(uint amount) public onlyOwner {
+  function mint(uint amount) public {
+    payable(owner()).tranfer(amount);
     _mint(msg.sender, amount * unit);
   }
 
