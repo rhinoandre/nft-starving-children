@@ -1,4 +1,5 @@
 import Nullstack from 'nullstack'
+import { ethers } from 'ethers';
 
 import ButtonLink from '../../components/ButtonLink'
 import Label from '../../components/Label'
@@ -18,7 +19,6 @@ class CreateNFT extends Nullstack {
   donationNFT = {
     name: '',
     description: '',
-    price: '',
     fileUrl: '',
   }
 
@@ -34,9 +34,42 @@ class CreateNFT extends Nullstack {
     }
   }
 
+  async uploadToIPFS({ sendJSONToIPFS }) {
+    try {
+      const tokenURI = await sendJSONToIPFS(this.childNFT);
+      return tokenURI;
+    } catch (error) {
+      console.log('Error uploading file: ', error);
+      alert('Error uploading file. Look at the logs');
+    }
+  }
+
+  async createNftTemplates({
+    router,
+    getNFTContract
+  }) {
+    if (Object.values(this.childNFT).some(value => !value) || Object.values(this.donationNFT).some(value => !value)) {
+      alert('Fill out all required fields!');
+      return null;
+    }
+
+    const childURI = await this.uploadToIPFS(this.childNFT);
+    const donationURI = await this.uploadToIPFS(this.donationNFT);
+
+    const contract = getNFTContract();
+    const transaction = await contract.createTemplate(childURI, donationURI, ethers.utils.parseUnits(this.childNFT.price, 18));
+    await transaction.wait();
+
+    console.log(transaction)
+
+    // listen to event and save into the database
+
+    // router.url = '/admin/my-nfts';
+  }
+
   renderImageUpload({ id, field }) {
     return (
-      <div class="flex max-h-fit items-center justify-center border-2 border-dashed border-white p-4">
+      <div class="flex max-h-fit items-center justify-center border-2 border-dashed border-white px-4 py-8">
         {!field && (
           <div
             class="flex w-full cursor-pointer justify-center"
@@ -131,7 +164,10 @@ class CreateNFT extends Nullstack {
                 hint="The description will be included on the item's detail page underneath its image. Markdown syntax is supported."
               />
             </div>
-            <TextControl bind={this.donationNFT.price} label="Price *" />
+            <div class="relative border-2 border-yellow-500 text-sm font-light p-7">
+              <span class="absolute bottom-2 right-2 text-lg font-semibold text-yellow-500">Donation</span>
+              This NFT will be generated at the same time as the original and will be donated when you sell it
+            </div>
           </div>
         </div>
       </section>

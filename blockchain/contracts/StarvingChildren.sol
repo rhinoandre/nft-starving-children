@@ -7,7 +7,7 @@ import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import 'hardhat/console.sol';
 
-import './Tap.sol';
+import './TAP.sol';
 
 contract StarvingChildren is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
@@ -51,8 +51,8 @@ contract StarvingChildren is ERC721URIStorage, Ownable {
         return tokenId;
     }
 
-    function mintNFT(uint templateId) public onlyOwner payable {
-        Tap tap = Tap(address)
+    function mintNFT(address tapAddress, uint templateId) public onlyOwner payable {
+        TAP tap = TAP(tapAddress);
         Token memory token = getTemplate(templateId);
         require(token.price > tap.balanceOf(msg.sender), 'Not enough money!');
 
