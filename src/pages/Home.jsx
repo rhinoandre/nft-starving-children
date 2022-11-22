@@ -42,7 +42,7 @@ class Home extends Nullstack {
             </ButtonLink>
             <ButtonLink
               href="/taps"
-              clazz="w-32 border border-rose bg-transparent text-rose"
+              class="w-32 border border-rose bg-transparent text-light-pink"
             >
               Buy TAPs
             </ButtonLink>

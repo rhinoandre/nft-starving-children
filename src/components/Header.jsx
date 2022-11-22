@@ -1,7 +1,7 @@
 import Nullstack from 'nullstack';
 import addressShortener from '../helpers/addressShortener';
 import Icon from '../components/Icon';
-import NftSlogan from './Logo';
+import Logo from '../components/Logo';
 import { ethers } from 'ethers'
 
 class Header extends Nullstack {
@@ -38,7 +38,7 @@ class Header extends Nullstack {
   renderLogout({ logout }) {
     return (
       <div class="flex items-center">
-        <Icon type="account" />{' '}
+        <Icon type="logout" />{' '}
         <span class="ml-2">
           <a class="cursor-pointer" onclick={logout}>
             Logout
@@ -82,7 +82,7 @@ class Header extends Nullstack {
       <div>
         <MyAccount />
         <div class="flex items-center justify-between p-6">
-          <NftSlogan />
+          <Logo />
           <nav>
             <div class="mt-4 flex justify-end text-white">
               <a

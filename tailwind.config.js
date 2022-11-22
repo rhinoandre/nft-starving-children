@@ -6,7 +6,11 @@ module.exports = {
     "./src/**/*.tsx",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        ['light-pink']: '#FF8896'
+      }
+    },
     fontFamily: {
       'roboto': ['Roboto', 'sans-serif'],
       'crete-round': ['Crete Round', 'sans-serif'],
