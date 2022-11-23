@@ -34,14 +34,42 @@ class CreateNFT extends Nullstack {
     }
   }
 
-  async uploadToIPFS({ sendJSONToIPFS }) {
+  async uploadToIPFS({
+    sendJSONToIPFS,
+    name,
+    description,
+    price,
+    externalLink,
+    fileUrl,
+  }) {
     try {
-      const tokenURI = await sendJSONToIPFS(this.childNFT);
+      const tokenURI = await sendJSONToIPFS({
+        name,
+        description,
+        price,
+        externalLink,
+        fileUrl
+      });
+
       return tokenURI;
     } catch (error) {
       console.log('Error uploading file: ', error);
       alert('Error uploading file. Look at the logs');
     }
+  }
+
+  static async saveTemplateInfo({ dbCollection, templateId, childURI, donationURI, price, childNFT, donationNFT }) {
+    const entry = {
+      id: templateId,
+      childJsonURI: childURI,
+      childData: childNFT,
+      donationJsonURI: donationURI,
+      donationData: donationNFT,
+      price
+    };
+
+    const result = await dbCollection.insertOne(entry);
+    console.log(`A document was inserted with the _id: ${result.insertedId}`);
   }
 
   async createNftTemplates({
@@ -57,14 +85,21 @@ class CreateNFT extends Nullstack {
     const donationURI = await this.uploadToIPFS(this.donationNFT);
 
     const contract = getNFTContract();
-    const transaction = await contract.createTemplate(childURI, donationURI, ethers.utils.parseUnits(this.childNFT.price, 18));
-    await transaction.wait();
+    const transactionPromise = await contract.createTemplate(childURI, donationURI, ethers.utils.parseUnits(this.childNFT.price, 18));
+    const transaction = await transactionPromise.wait();
 
-    console.log(transaction)
+    const event = transaction.events.find(e => e.event === 'TemplateCreated');
+    const { templateId } = event.args;
+    this.saveTemplateInfo({
+      templateId: templateId.toNumber(),
+      childURI,
+      donationURI,
+      childNFT: this.childNFT,
+      donationNFT: this.donationNFT,
+      price: this.childNFT.price
+    });
 
-    // listen to event and save into the database
-
-    // router.url = '/admin/my-nfts';
+    router.url = '/admin/my-nfts';
   }
 
   renderImageUpload({ id, field }) {

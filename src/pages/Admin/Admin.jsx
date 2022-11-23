@@ -5,6 +5,7 @@ import ButtonLink from '../../components/ButtonLink'
 import Logo from '../../components/Logo'
 import CreateNFT from './CreateNFT'
 import Icon from '../../components/Icon';
+import MyNFTs from './MyNFTs'
 
 class Admin extends Nullstack {
   update({ router, walletAddress }) {
@@ -99,6 +100,7 @@ class Admin extends Nullstack {
         <Nav />
         <section class="w-4/5">
           <CreateNFT route="/admin/create-nft" />
+          <MyNFTs route="/admin/my-nfts/:side" />
           <div route='/admin/*'>Comming</div>
         </section>
       </main>

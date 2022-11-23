@@ -23,8 +23,8 @@ contract StarvingChildren is ERC721URIStorage, Ownable {
         uint price;
     }
 
-    event TemplateCreated(uint indexed tokenId, string childURI, string donationURI, uint price);
-    event TokenSold(uint indexed templateId, uint childId, uint donationId, uint price);
+    event TemplateCreated(uint indexed templateId, string childURI, string donationURI, uint price);
+    event TokenSold(uint indexed tokenId, uint childId, uint donationId, uint price);
 
     constructor() ERC721('StarvingChildren', 'SC') {}
 

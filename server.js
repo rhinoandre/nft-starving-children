@@ -13,7 +13,10 @@ context.start = async function start() {
 
   const databaseClient = new MongoClient(secrets.databaseHost);
   await databaseClient.connect();
-  context.database = await databaseClient.db(secrets.databaseName);
+  const database = await databaseClient.db(secrets.databaseName);
+
+  context.database = database;
+  context.dbCollection = database.collection('children_nft');
   context.isAdminAccount = isAdminAccount;
 }
 
