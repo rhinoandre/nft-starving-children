@@ -58,20 +58,6 @@ class CreateNFT extends Nullstack {
     }
   }
 
-  static async saveTemplateInfo({ dbCollection, templateId, childURI, donationURI, price, childNFT, donationNFT }) {
-    const entry = {
-      id: templateId,
-      childJsonURI: childURI,
-      childData: childNFT,
-      donationJsonURI: donationURI,
-      donationData: donationNFT,
-      price
-    };
-
-    const result = await dbCollection.insertOne(entry);
-    console.log(`A document was inserted with the _id: ${result.insertedId}`);
-  }
-
   async createNftTemplates({
     router,
     getNFTContract
@@ -86,20 +72,9 @@ class CreateNFT extends Nullstack {
 
     const contract = getNFTContract();
     const transactionPromise = await contract.createTemplate(childURI, donationURI, ethers.utils.parseUnits(this.childNFT.price, 18));
-    const transaction = await transactionPromise.wait();
+    await transactionPromise.wait();
 
-    const event = transaction.events.find(e => e.event === 'TemplateCreated');
-    const { templateId } = event.args;
-    this.saveTemplateInfo({
-      templateId: templateId.toNumber(),
-      childURI,
-      donationURI,
-      childNFT: this.childNFT,
-      donationNFT: this.donationNFT,
-      price: this.childNFT.price
-    });
-
-    router.url = '/admin/my-nfts';
+    router.url = '/admin/my-nfts/a';
   }
 
   renderImageUpload({ id, field }) {
