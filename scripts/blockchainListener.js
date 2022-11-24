@@ -3,8 +3,9 @@ const { ethers, BigNumber, utils } = require('ethers');
 const StarvingChildren = require('../blockchain/artifacts/blockchain/contracts/StarvingChildren.sol/StarvingChildren.json');
 
 const perPage = 100;
-const contractAddress = '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707';
-const provider = new ethers.providers.JsonRpcProvider();
+const contractAddress = process.env.NULLSTACK_SECRETS_STARVING_CHILDREN_ADDRESS;
+const providerNetwork = process.env.NULLSTACK_SETTINGS_PROVIDER_NETWORK;
+const provider = new ethers.providers.JsonRpcProvider(providerNetwork);
 const contract = new ethers.Contract(contractAddress, StarvingChildren.abi, provider);
 
 async function saveTemplateInfo({ dbCollection, templateId, childURI, donationURI, price }) {
@@ -26,29 +27,38 @@ async function scan() {
 
   const lastBlockEntry = await database.collection('lastBlock').findOne();
   let lastScannedBlock = lastBlockEntry.lastScannedBlock;
-  async function listen() {
-    const events = await contract.queryFilter('*', lastScannedBlock, lastScannedBlock + perPage);
+  provider.on('block', async (blockNumber) => {
+    console.log('Handling block:', blockNumber);
+    if (blockNumber <= lastScannedBlock) {
+      console.log('Skipping... Block already handled');
+      return;
+    };
+
+    const events = await contract.queryFilter('TemplateCreated', lastScannedBlock, lastScannedBlock + perPage);
     for (const event of events) {
-      lastScannedBlock = lastScannedBlock + 1;
-      if (event.event === 'TemplateCreated') {
-       const { templateId, childURI, donationURI, price } = event.args;
-        console.log('TemplateCreated.args', event.blockNumber, lastScannedBlock, { templateId: ethers.BigNumber.from(templateId).toNumber(), childURI, donationURI, price: ethers.utils.formatUnits(price) })
-        saveTemplateInfo({
-          dbCollection,
-          templateId: BigNumber.from(templateId).toNumber(),
-          childURI,
-          donationURI,
-          price: utils.formatUnits(price)
-        });
-      }
+      lastScannedBlock = blockNumber;
+      const { templateId, childURI, donationURI, price } = event.args;
+      const NFTTemplate = {
+        templateId: BigNumber.from(templateId).toNumber(),
+        childURI,
+        donationURI,
+        price: utils.formatUnits(price)
+      };
+
+      console.log('Saving TemplateCreated.args', NFTTemplate);
+
+      saveTemplateInfo({
+        dbCollection,
+        ...NFTTemplate
+      });
     }
+
     await database.collection('lastBlock').updateOne(
       { _id: lastBlockEntry._id },
-      { $set: { 'lastScannedBlock': lastScannedBlock } }
+      { $set: { 'lastScannedBlock': blockNumber } }
     );
-    setTimeout(listen, 10000);
-  }
+  })
 
-  listen();
+  // listen();
 }
 scan();
