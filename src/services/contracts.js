@@ -3,29 +3,34 @@ import { starvingChildrenAddress, tapAddress } from '../../config';
 import starvingChildrenNFT from '../../blockchain/artifacts/blockchain/contracts/StarvingChildren.sol/StarvingChildren.json'
 import tap from '../../blockchain/artifacts/blockchain/contracts/TAP.sol/TAP.json'
 
+let provider;
 let signer;
-function getSigner() {
-    if (signer) return signer;
+export function getProviderAndSigner(providerUrl) {
+    if (signer && provider) return { provider, signer };
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    provider = new ethers.providers.JsonRpcProvider(providerUrl);
     signer = provider.getSigner();
-    return signer;
+    return { provider, signer };
 }
 
-export function getNFTContract() {
-    const signer = getSigner();
-    return new ethers.Contract(
-        starvingChildrenAddress,
-        starvingChildrenNFT.abi,
-        signer,
-    );
+export function getNFTContract(providerUrl) {
+    return () => {
+        const { signer } = getProviderAndSigner(providerUrl);
+        return new ethers.Contract(
+            starvingChildrenAddress,
+            starvingChildrenNFT.abi,
+            signer,
+        );
+    }
 }
 
-export function getTAPContract() {
-    const signer = getSigner();
-    return new ethers.Contract(
-        tapAddress,
-        tap.abi,
-        signer,
-    );
+export function getTAPContract(providerUrl) {
+    return () => {
+        const { signer } = getProviderAndSigner(providerUrl);
+        return new ethers.Contract(
+            tapAddress,
+            tap.abi,
+            signer,
+        );
+    }
 }

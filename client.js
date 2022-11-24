@@ -1,8 +1,7 @@
 import Nullstack from 'nullstack';
 
 import Application from './src/Application';
-import { getNFTContract, getTAPContract } from './src/services/contracts';
-import { tapAddress } from './config';
+import { getNFTContract, getProviderAndSigner, getTAPContract } from './src/services/contracts';
 
 const context = Nullstack.start(Application);
 
@@ -68,10 +67,10 @@ async function sendJSONToIPFS({ name, description, fileUrl, externalLink }) {
 }
 
 context.start = async function start() {
-  context.getNFTContract = getNFTContract;
-  context.getTAPContract = getTAPContract;
-
-  context.tapContractAddress = tapAddress;
+  const { providerNetwork } = context.settings;
+  context.getProviderAndSigner = getProviderAndSigner;
+  context.getNFTContract = getNFTContract(providerNetwork);
+  context.getTAPContract = getTAPContract(providerNetwork);
 
   context.sendFileToIPFS = sendFileToIPFS;
   context.sendJSONToIPFS = sendJSONToIPFS;
