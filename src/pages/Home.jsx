@@ -9,18 +9,11 @@ import Box3D from '../components/Box3D';
 class Home extends Nullstack {
   nfts = [
     {
-      image:
-        'child3.png',
-      name: 'Side A',
-      description: 'Side A text description',
-      price: '0.49',
+      uri: 'QmW2ApdEpW637dqLHTrcPcZTgedtAWDH9keQMcXXPWsTTD',
+      price: 0.49
     },
     {
-      image:
-        'bottle-water.png',
-      name: 'Side B',
-      description: 'Side B text description',
-      price: '0.49',
+      uri: 'QmWVE56AwysUPGX5KMUC8ngcJobT3uagT5xJ9AXVU5DFGK'
     },
   ];
 
@@ -111,8 +104,9 @@ class Home extends Nullstack {
           </p>
         </div>
         <div class="flex w-1/2 justify-center gap-4">
-          <NftCard nft={this.nfts[0]} />
-          <NftCard nft={this.nfts[1]} />
+          {this.nfts.map(nft => (
+            <NftCard nftURI={nft.uri} price={nft.price} />
+          ))}
         </div>
       </section>
     );

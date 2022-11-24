@@ -1,28 +1,49 @@
-import Icon from '../components/Icon';
+import Nullstack from 'nullstack';
 
-export default function NftCard({ nft, side = 'a' }) {
-  const isSideA = side === 'a';
-  const nftData = isSideA ? nft.childData : nft.donationData;
-  return (
-    <div class="overflow-hidden flex flex-col border bg-black p-2">
-      <img src={nftData.fileUrl} alt={nftData.name} />
-      <div class="mt-4">
-        <p class="text-2xl font-semibold">{nftData.name}</p>
-        <div class="h-6 overflow-hidden">
-          <p class="text-white">{nftData.description}</p>
+import Icon from '../components/Icon';
+import Loading from '../components/Loading';
+
+export default class NftCard extends Nullstack {
+  loading = true;
+  nftData;
+
+  async fetchNFTData({ nftURI }) {
+    const result = await fetch(`https://gateway.pinata.cloud/ipfs/${nftURI}`);
+    const data = await result.json();
+    return data;
+  }
+
+  async initiate() {
+    this.loading = true;
+    this.nftData = await this.fetchNFTData()
+    this.loading = false;
+  }
+
+  render({ price }) {
+    if (this.loading) {
+      return <Loading />
+    }
+
+    return (
+      <div class="overflow-hidden flex flex-col border bg-black p-2">
+        <img src={this.nftData.image} alt={this.nftData.name} />
+        <div class="mt-4">
+          <p class="text-2xl font-semibold">{this.nftData.name}</p>
+          <div class="h-6 overflow-hidden">
+            <p class="text-white">{this.nftData.description}</p>
+          </div>
         </div>
-      </div>
-      <div class="mt-4">
-        <span class="text-sm">{isSideA ? 'Price' : 'Donation'}</span>
-        {isSideA && <div class="flex gap-2 items-end justify-between">
-          <p class="flex text-lg font-bold text-white">
-            <span class="mt-1 mr-2">
-              <Icon type="tap" />
-            </span>
-            {nft.price}
-          </p>
-        </div>}
-        {/* {purchasable && (
+        <div class="mt-4">
+          <span class="text-sm">{this.nftData.price ? 'Price' : 'Donation'}</span>
+          {price && <div class="flex gap-2 items-end justify-between">
+            <p class="flex text-lg font-bold text-white">
+              <span class="mt-1 mr-2">
+                <Icon type="tap" />
+              </span>
+              {price}
+            </p>
+          </div>}
+          {/* {purchasable && (
           <button
             class="mt-4 w-full rounded bg-mustard py-2 px-12 font-bold text-black"
             onclick={() => this.buyNFT({ nft })}
@@ -30,7 +51,8 @@ export default function NftCard({ nft, side = 'a' }) {
             Buy
           </button>
         )} */}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
