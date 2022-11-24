@@ -11,20 +11,17 @@ class Header extends Nullstack {
     }
   }
 
-  static async isAdminAccount({ isAdminAccount, request }) {
-    const body = JSON.parse(request.body)
-    return isAdminAccount(body.walletAddress);
+  static async isAdminAccount({ isAdminAccount, walletAddress }) {
+    return isAdminAccount(walletAddress);
   }
 
- async connectWallet({ router, walletAddress, login }) {
+ async connectWallet({ router, walletAddress, login, getProviderAndSigner, settings }) {
     if (walletAddress && await this.isAdminAccount({ walletAddress })) {
       router.url = '/admin';
     }
 
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      await provider.send("eth_requestAccounts", []);
-      const signer = provider.getSigner();
+      const { signer } = getProviderAndSigner(settings.providerNetwork)
       const walletAddress = await signer.getAddress();
       login(walletAddress);
       if(await this.isAdminAccount({ walletAddress })) {
